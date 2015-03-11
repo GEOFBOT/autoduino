@@ -227,3 +227,9 @@ FakesAssemblies/
 # Test images
 *.jpg
 *.avi
+
+# Generated stuff
+bin/*
+GNUmakefile
+Makefile
+*.d

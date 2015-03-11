@@ -1,0 +1,17 @@
+toolsets = gnu;
+
+cxx-compiler-options = "-std=c++0x";
+libs = boost_system opencv_core opencv_video opencv_highgui;
+
+action mkdir {
+	commands = "mkdir -p bin";
+}
+
+program client {
+	sources { client/src/main.cpp }
+	basename = bin/$(id);
+}
+program server {
+	sources { server/src/main.cpp }
+	basename = bin/$(id);
+}

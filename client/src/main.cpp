@@ -1,4 +1,4 @@
-#include <iostring>
+#include <iostream>
 #include <string>
 
 #include <boost/asio.hpp>
@@ -36,7 +36,7 @@ int main() {
 	  }
 
 	  std::string response = std::to_string(img.channels()) + " " + std::to_string(img.cols) + " " + std::to_string(img.rows) + " ";
-	  response += std::string(img.data, img.channels() * img.cols * img.rows);
+	  response += std::string((char *)img.data, img.channels() * img.cols * img.rows);
 	  
 	  boost::system::error_code err;
 	  boost::asio::write(socket, boost::asio::buffer(response), err);
