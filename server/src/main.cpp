@@ -63,9 +63,12 @@ int main() {
 	  int channels, rows;
 	  std::istringstream sstr(metadata);
 	  sstr >> channels >> rows;
+
+	  std::cout << channels << ' ' << rows << std::endl;
 	  
 	  Mat img(imgdata, true);
 	  img.reshape(channels, rows);
+	  imwrite("test.jpg", img);
 	}
   } catch (std::exception& e) {
 	std::cerr << e.what() << std::endl;

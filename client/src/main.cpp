@@ -38,10 +38,11 @@ int main() {
 		return -1;
 	  }
 
-	  std::string response_meta = std::to_string(img.channels()) + " " + std::to_string(img.cols) + " " + std::to_string(img.rows);
+	  std::string response_meta = std::to_string(img.channels()) + " " + std::to_string(img.rows);
 	  
 	  std::string response = std::string((char *)img.data, img.channels() * img.cols * img.rows);
-	  
+
+	  std::cout << "Connection received on ports 2014, 2015. Channels, rows: " << response_meta << ' ' << img.rows << std::endl;
 	  boost::system::error_code err;
 	  boost::asio::write(socket_meta, boost::asio::buffer(response_meta), err);
 	  boost::asio::write(socket, boost::asio::buffer(response), err);
