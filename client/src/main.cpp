@@ -20,10 +20,13 @@ int main() {
 	}
 
 	boost::asio::io_service io_service;
+	tcp::acceptor acceptor_meta(io_service, tcp::endpoint(tcp::v4(), 2014));
 	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 2015));
 
 	while(true) {
+	  tcp::socket socket_meta(io_service);
 	  tcp::socket socket(io_service);
+	  acceptor_meta.accept(socket_meta);
 	  acceptor.accept(socket);
 
 	  // Clear the camera buffer and capture an image
@@ -35,10 +38,12 @@ int main() {
 		return -1;
 	  }
 
-	  std::string response = std::to_string(img.channels()) + " " + std::to_string(img.cols) + " " + std::to_string(img.rows) + " ";
-	  response += std::string((char *)img.data, img.channels() * img.cols * img.rows);
+	  std::string response_meta = std::to_string(img.channels()) + " " + std::to_string(img.cols) + " " + std::to_string(img.rows);
+	  
+	  std::string response = std::string((char *)img.data, img.channels() * img.cols * img.rows);
 	  
 	  boost::system::error_code err;
+	  boost::asio::write(socket_meta, boost::asio::buffer(response_meta), err);
 	  boost::asio::write(socket, boost::asio::buffer(response), err);
 	}
   } catch (std::exception& e) {
