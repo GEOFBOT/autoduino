@@ -19,6 +19,9 @@ int main() {
 	  return -1;
 	}
 
+	camera.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+	camera.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+
 	boost::asio::io_service io_service;
 	tcp::acceptor acceptor_meta(io_service, tcp::endpoint(tcp::v4(), 2014));
 	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 2015));

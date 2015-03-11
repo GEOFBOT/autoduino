@@ -34,7 +34,7 @@ int main() {
 	  while(true) {
 		boost::array<char, 128> buf;
 		boost::system::error_code error;
-		socket.read_some(boost::asio::buffer(buf), error);
+		socket_meta.read_some(boost::asio::buffer(buf), error);
 		if(error == boost::asio::error::eof)
 		  break;
 		else if(error)
@@ -62,6 +62,7 @@ int main() {
 	  // Convert to image
 	  int channels, rows;
 	  std::istringstream sstr(metadata);
+	  std::cout << metadata << ' ';
 	  sstr >> channels >> rows;
 
 	  std::cout << channels << ' ' << rows << std::endl;
