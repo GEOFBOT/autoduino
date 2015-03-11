@@ -41,18 +41,22 @@ int main() {
 	  std::cout << size << ' ' << channels << ' ' << rows << std::endl;
 	  
 	  // Grab image data
-	  {
-		boost::array<char, size> buf;
+	  while(true) {
+		boost::array<char, 128> buf;
 		boost::system::error_code error;
 		socket.read_some(boost::asio::buffer(buf), error);
-		if(error)
+		if(error == boost::asio::error::eof)
+		  break;
+		else if(error)
 		  throw boost::system::system_error(error);
 
 		std::vector<uchar> vecbuf(buf.begin(), buf.end());
 		imgdata.insert(imgdata.end(), vecbuf.begin(), vecbuf.end());
 	  }
 
-	  Mat img(imgdata, true);
+	  std::vector<uchar> clipped_imgdata(imgdata.begin(), imgdata.begin() + size - 1);
+	  
+	  Mat img(clipped_imgdata, true);
 	  img.reshape(channels, rows);
 	  imwrite("test.jpg", img);
 	}
