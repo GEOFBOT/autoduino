@@ -44,14 +44,14 @@ int main() {
 		return -1;
 	  }
 
-	  std::stringstream sstr;
+	  std::ostringstream sstr;
 	  boost::archive::text_oarchive oa(sstr);
 	  oa << img;
 
-	  std::string data(sstr.str());
-
+	  std::cout << "Connected and sending data of length " << sstr.str().length() << std::endl;
+	  
 	  boost::system::error_code err;
-	  socket.write_some(boost::asio::buffer(data), err);
+	  socket.write_some(boost::asio::buffer(sstr.str()), err);
 	  /*std::string metadata = std::to_string(img.total() * img.elemSize()) + " " + std::to_string(img.channels()) + " " + std::to_string(img.rows) + " ";
 	  while(metadata.size() <= 128)
 		metadata += ' ';

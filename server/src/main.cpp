@@ -43,6 +43,8 @@ int main() {
 		sstr << std::string(buf.begin(), buf.end());
 	  }
 
+	  std::cout << "Received data has length " << sstr.str().length() << std::endl;
+	  
 	  boost::archive::text_iarchive data(sstr);
 
 	  Mat img;
