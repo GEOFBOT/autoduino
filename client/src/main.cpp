@@ -23,8 +23,8 @@ int main() {
 	  return -1;
 	}
 
-	camera.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-	camera.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+	camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+	camera.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 
 	boost::asio::io_service io_service;
 	tcp::resolver resolver(io_service);
