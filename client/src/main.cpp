@@ -1,8 +1,12 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include <boost/asio.hpp>
+#include <boost/archive/text_oarchive.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <cvmat_serialization.h>
 
 using namespace cv;
 using boost::asio::ip::tcp;
@@ -40,7 +44,15 @@ int main() {
 		return -1;
 	  }
 
-	  std::string metadata = std::to_string(img.total() * img.elemSize()) + " " + std::to_string(img.channels()) + " " + std::to_string(img.rows) + " ";
+	  std::stringstream sstr;
+	  boost::archive::text_oarchive oa(sstr);
+	  oa << img;
+
+	  std::string data(sstr.str());
+
+	  boost::system::error_code err;
+	  socket.write_some(boost::asio::buffer(data), err);
+	  /*std::string metadata = std::to_string(img.total() * img.elemSize()) + " " + std::to_string(img.channels()) + " " + std::to_string(img.rows) + " ";
 	  while(metadata.size() <= 128)
 		metadata += ' ';
 	  
@@ -50,6 +62,7 @@ int main() {
 	  std::cout << "Connected to port 2015. Channels, rows: " << metadata << ' ' << img.rows << std::endl;
 	  boost::system::error_code err;
 	  socket.write_some(boost::asio::buffer(metadata + imgdata), err);
+	  */
 	}
   } catch (std::exception& e) {
 	std::cerr << e.what() << std::endl;

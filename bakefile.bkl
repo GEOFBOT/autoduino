@@ -1,7 +1,8 @@
 toolsets = gnu;
 
 cxx-compiler-options = "-std=c++0x";
-libs = boost_system opencv_core opencv_video opencv_highgui;
+libs = boost_system boost_serialization opencv_core opencv_video opencv_highgui;
+includedirs += include/;
 
 action mkdir {
 	commands = "mkdir -p bin";
