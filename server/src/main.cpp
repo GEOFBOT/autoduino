@@ -19,11 +19,15 @@ int main() {
 
 	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 2015));
 
+	std::cout << "Server started..." << std::endl;
+	
 	namedWindow("test");
 	
 	while(true) {
 	  tcp::socket socket(io_service);
 	  acceptor.accept(socket);
+	  std::cout << "Connected..." << std::endl;
+	  
 	  std::stringstream sstr;
 
 	  // Grab image

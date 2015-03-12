@@ -28,7 +28,7 @@ int main() {
 
 	boost::asio::io_service io_service;
 	tcp::resolver resolver(io_service);
-	tcp::resolver::query query("192.168.44.237", "2015");
+	tcp::resolver::query query("192.168.1.2", "2015");
 	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 
 	while(true) {
