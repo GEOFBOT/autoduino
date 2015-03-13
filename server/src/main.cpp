@@ -59,8 +59,12 @@ int main() {
 	  
 	  boost::archive::text_iarchive data(sstr);
 
+	  std::vector<uchar> imageBuf;
+	  
 	  Mat img;
-	  data >> img;
+	  data >> imageBuf;
+
+	  img = imdecode(imageBuf, CV_LOAD_IMAGE_COLOR);
 
 	  /*int size, channels, rows;
 	  std::istringstream sstr(metadata);

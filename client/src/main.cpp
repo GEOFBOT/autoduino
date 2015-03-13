@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include <boost/asio.hpp>
+#include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -44,9 +45,13 @@ int main() {
 		return -1;
 	  }
 
+	  // Encode image as png to shrink size
+	  std::vector<uchar> imageBuffer;
+	  imencode(".png", img, imageBuffer);
+	  
 	  std::ostringstream sstr;
 	  boost::archive::text_oarchive oa(sstr);
-	  oa << img;
+	  oa << imageBuffer;
 
 	  std::cout << "Connected and sending data of length " << sstr.str().length() << std::endl;
 
