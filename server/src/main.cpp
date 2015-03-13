@@ -27,20 +27,32 @@ int main() {
 	  tcp::socket socket(io_service);
 	  acceptor.accept(socket);
 	  std::cout << "Connected..." << std::endl;
-	  
+
+	  size_t size;
 	  std::stringstream sstr;
 
 	  // Grab image
-	  while(true) {
-		boost::array<char, 128> buf;
+	  //	  while(true) {
+	  {
+		std::vector<char> buf(64);
 		boost::system::error_code error;
-		socket.read_some(boost::asio::buffer(buf), error);
-		if(error == boost::asio::error::eof)
-		  break;
-		else if(error)
-		  throw boost::system::system_error(error);
+		boost::asio::read(socket, boost::asio::buffer(buf));
+		//socket.read_some(boost::asio::buffer(buf), error);
+		//if(error == boost::asio::error::eof)
+		//break;
+		//if(error)
+		  //throw boost::system::system_error(error);
+
+		std::istringstream sstr2(std::string(buf.begin(), buf.end()));
+		sstr2 >> size;
+	  }
+
+	  {
+		std::vector<char> buf(size);
+		boost::system::error_code error;
+		boost::asio::read(socket, boost::asio::buffer(buf));
 	  
-		sstr << std::string(buf.begin(), buf.end());
+		sstr.str(std::string(buf.begin(), buf.end()));
 	  }
 
 	  std::cout << "Received data has length " << sstr.str().length() << std::endl;
