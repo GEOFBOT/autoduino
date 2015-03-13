@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <ctime>
 
 #include <boost/asio.hpp>
 #include <boost/serialization/vector.hpp>
@@ -36,32 +37,42 @@ int main() {
 	  tcp::socket socket(io_service);
 	  boost::asio::connect(socket, endpoint_iterator);
 
-	  // Clear the camera buffer and capture an image
-	  camera.grab(); camera.grab(); camera.grab(); camera.grab(); camera.grab();
-	  camera >> img;
+	  {
+		std::clock_t begincap = std::clock();
+		// Clear the camera buffer and capture an image
+		camera.grab(); camera.grab(); camera.grab(); camera.grab(); camera.grab();
+		camera >> img;
+		std::cout << "Image capture took " << (std::clock() - begincap) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+	  }
 
 	  if(img.empty()) {
 		std::cerr << "Frame is empty? WHAT THE F-*BOOOOOMMMM*" << std::endl;
 		return -1;
 	  }
 
-	  // Encode image as png to shrink size
-	  std::vector<uchar> imageBuffer;
-	  imencode(".png", img, imageBuffer);
+	  {
+		std::clock_t beginenc = std::clock();
+		// Encode image as png to shrink size
+		std::vector<uchar> imageBuffer;
+		imencode(".png", img, imageBuffer);
+		std::cout << "Image encode took " << (std::clock() - beginenc) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 	  
-	  std::ostringstream sstr;
-	  boost::archive::text_oarchive oa(sstr);
-	  oa << imageBuffer;
+		std::ostringstream sstr;
+		boost::archive::text_oarchive oa(sstr);
+		oa << imageBuffer;
 
-	  std::cout << "Connected and sending data of length " << sstr.str().length() << std::endl;
+		std::cout << "Connected and sending data of length " << sstr.str().length() << std::endl;
 
-	  std::string header = std::to_string(sstr.str().length());
-	  while(header.length() < 64) {
-		header += " ";
+		std::string header = std::to_string(sstr.str().length());
+		while(header.length() < 64) {
+		  header += " ";
+		}
+
+		boost::system::error_code err;
+		std::clock_t beginsend = std::clock();
+		socket.write_some(boost::asio::buffer(header + sstr.str()), err);
+		std::cout << "Image send took " << (std::clock() - beginsend) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 	  }
-	  
-	  boost::system::error_code err;
-	  socket.write_some(boost::asio::buffer(header + sstr.str()), err);
 	  /*std::string metadata = std::to_string(img.total() * img.elemSize()) + " " + std::to_string(img.channels()) + " " + std::to_string(img.rows) + " ";
 	  while(metadata.size() <= 128)
 		metadata += ' ';
